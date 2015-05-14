@@ -1,0 +1,39 @@
+var http=require('http');
+var fs =require('fs');
+var url = require("url");
+
+
+var server =http.createServer(FileRead).listen(8000);
+
+console.log('server started');
+
+    function FileRead(request, responce) {
+        var pathname = url.parse(request.url).pathname;
+        console.log("Request for " + pathname + " received.");
+        responce.writeHead(200, {'Content-Type': 'text/html'});
+        if(pathname=="/")
+         {
+            console.log("Got "+pathname);
+            fs.readFile("zMain.html", function (err, contest)
+            {
+                responce.end(contest)
+            })
+         }
+        else
+            {
+            sub = pathname.substring(1, pathname.length);
+            fs.readFile(sub, function  (err, contest) {
+                if(err) {
+                        responce.write(
+                            "<head><title>Page not found</title><style>" +"img{height:400px;width:400px;}</style>" +
+                            "<body><div align='center'><img src=Pictures/Leave.jpg>"+
+                                "<h1 align='center'>404</h1></div></body></head>"
+                            );
+                        responce.end(contest)
+                }
+                responce.end(contest);
+            })
+            }
+
+    }
+
